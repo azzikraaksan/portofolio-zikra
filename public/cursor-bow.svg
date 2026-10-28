@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="32" viewBox="0 0 35 32">
+  <!-- miring ke kiri 20 derajat, berporos di ujung jari (titik klik) -->
+  <g transform="rotate(-20 11 3)">
+  <!-- halo putih supaya terlihat di latar gelap -->
+  <g fill="#ffffff" stroke="#ffffff" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M8 5 a2.6 2.6 0 0 1 5.2 0 V16 H8 Z"/>
+    <rect x="6" y="14" width="19" height="11" rx="4.5"/>
+    <rect x="3.2" y="16.5" width="7" height="4.4" rx="2.2"/>
+    <rect x="8.5" y="24.5" width="13" height="5.5" rx="1.6"/>
+    <path d="M24 13.4 C20 9 17.6 11.8 19.4 14 C20.8 15.6 23 14.8 24 13.4 Z"/>
+    <path d="M24 13.4 C28 9 30.6 11.8 28.6 14 C27.2 15.6 25 14.8 24 13.4 Z"/>
+  </g>
+  <!-- tangan: telunjuk digambar terakhir tanpa garis bawah supaya menyatu dengan punggung tangan -->
+  <g fill="#ffe0d6" stroke="#7a3f3a" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="3.2" y="16.5" width="7" height="4.4" rx="2.2"/>
+    <rect x="6" y="14" width="19" height="11" rx="4.5"/>
+    <rect x="8.5" y="24.5" width="13" height="5.5" rx="1.6" fill="#f4a9a8"/>
+    <path d="M8 5 a2.6 2.6 0 0 1 5.2 0 V16 H8 Z" stroke="none"/>
+    <path d="M8 16.4 V5 a2.6 2.6 0 0 1 5.2 0 V16.4" fill="none"/>
+  </g>
+  <!-- garis jari yang menekuk -->
+  <g fill="none" stroke="#7a3f3a" stroke-width="1" stroke-linecap="round">
+    <path d="M16.6 16.2 V20"/>
+    <path d="M20 16.2 V20"/>
+  </g>
+  <!-- pita menempel di pojok punggung tangan -->
+  <g fill="#ff8fa6" stroke="#7a3f3a" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M24 13.4 C20 9 17.6 11.8 19.4 14 C20.8 15.6 23 14.8 24 13.4 Z"/>
+    <path d="M24 13.4 C28 9 30.6 11.8 28.6 14 C27.2 15.6 25 14.8 24 13.4 Z"/>
+    <circle cx="24" cy="13.5" r="1.6" fill="#d94f70"/>
+  </g>
+  </g>
+</svg>
