@@ -252,14 +252,14 @@ export const projects: Project[] = [
       "Security is treated as a property of the system, not a feature: tenant boundaries are enforced at every layer, not in just one place.",
     result:
       "3 layers of data isolation, 10+ modules migrated with zero downtime, and 0 stale-state incidents since the fix.",
-    stack: ["React.js & Next.js", "TypeScript", "Laravel & Go", "PostgreSQL & MySQL", "shadcn/ui", "BPMN"],
+    stack: ["React + Vite", "Go"],
     image: { src: "/images/alurkerja/cover1.png", alt: "AlurKerja main dashboard" },
     cases: alurkerjaCases,
   },
   {
     slug: "mavoka",
     name: "Mavoka",
-    title: "Authentication, a REST API, and analytics dashboards for a job and training platform",
+    title: "An internship platform for vocational high school students",
     kind: "Internship project",
     summary:
       "A platform for managing users, job vacancies, internship applications, and training programs. I built its authentication, its database schema and REST API, and its analytics dashboard.",
@@ -276,7 +276,7 @@ export const projects: Project[] = [
   {
     slug: "jeep-booking-app",
     name: "Jeep Booking App",
-    title: "An operations interface for a tourist jeep community",
+    title: "A platform for booking tourist jeep tours",
     kind: "Academic project",
     summary:
       "As the frontend developer on the PPSI project, I designed, built, and implemented the user interface for the operational system of a tourist jeep community, and handled the complex interactions inside it.",
@@ -312,7 +312,7 @@ export const projects: Project[] = [
   {
     slug: "helpdesk-mini",
     name: "Helpdesk Mini",
-    title: "A small help-ticket manager",
+    title: "A small help ticket manager",
     kind: "Side project",
     summary:
       "A help-ticket management app that makes it easy for users to log, manage, and track the resolution of issues. It provides a ticket status dashboard, priority settings, search, and filters so ticket handling is more organized.",
@@ -339,8 +339,8 @@ export type Dot = "ok" | "wait";
 // The short list on the right side of the hero.
 export const building: { name: string; note: string; dot: Dot; href: string }[] = [
   { name: "AlurKerja", note: "Currently building · Full stack", dot: "ok", href: "/projects/alurkerja" },
-  { name: "Mavoka", note: "Internship project", dot: "wait", href: "/projects/mavoka" },
-  { name: "Jeep Booking App", note: "Frontend contribution · Academic", dot: "wait", href: "/projects/jeep-booking-app" },
+  { name: "Mavoka", note: "Internship project · Full stack", dot: "wait", href: "/projects/mavoka" },
+  { name: "Jeep Booking App", note: "Academic · Frontend", dot: "wait", href: "/projects/jeep-booking-app" },
   { name: "Side Projects", note: "Spendly · Helpdesk Mini", dot: "wait", href: "/projects/spendly" },
 ];
 

@@ -21,7 +21,7 @@ const Arrow = ({ d = "M5 12h14M13 6l6 6-6 6" }: { d?: string }) => (
 const [featured, ...others] = projects;
 
 const letter = [
-  "My full name is Azzikra Ramadhanti Aksan. I'm a full stack developer with more than a year of experience in React, Next.JS, Vue.JS, Laravel, and Go.",
+  "My full name is Azzikra Ramadhanti Aksan. I'm a full stack developer with 1+ year of experience.",
   "Since August 2025 I've been at PT Javan Cipta Solusi, first as an intern, then as a freelancer. Most of my time goes into AlurKerja: building features from the API to interface, and handling 100+ support tickets.",
   "Two years of handling letters, meeting minutes, and records for BEM made me careful by habit. That habit carries into my code: validation, access limits, and quality gates.",
 ];
@@ -56,7 +56,7 @@ export default function Home() {
                 From APIs to pixels, backend to frontend. I like making things work, making them better, and figuring out the tricky bits along the way.
               </p>
               <div data-load style={vars({ "--d": "500ms" })} className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-5">
-                <a className="btn" href="#contact">Contact Me <span className="go"><Arrow /></span></a>
+                <a className="btn" href="#contact">Let's Build Together<span className="go"><Arrow /></span></a>
                 <a className="textlink mono" href={profile.cv} download>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14" /></svg>
                   <span className="u">Download CV</span>
@@ -114,7 +114,7 @@ export default function Home() {
               <ul className="chips">
                 {featured.stack.slice(0, 3).map((s) => <li key={s}>{s}</li>)}
               </ul>
-              <Link className="btn" href={`/projects/${featured.slug}`}>Read the case study <span className="go"><Arrow /></span></Link>
+              <Link className="btn" href={`/projects/${featured.slug}`}>Explore more <span className="go"><Arrow /></span></Link>
             </div>
             <div data-reveal suppressHydrationWarning style={vars({ "--i": 2 })}>
               <Laptop labels={laptopScreens.map((s) => s.alt)}>
@@ -256,7 +256,7 @@ export default function Home() {
         <section id="journey" aria-labelledby="pj" className="wrap section pt-0">
           <p data-reveal suppressHydrationWarning className="mono eyebrow">~ Journey</p>
           <h2 id="pj" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">
-            Started in the Classroom. <em>still climbing.</em>
+            Started in the Classroom <em>still climbing.</em>
           </h2>
           <ol className="timeline mt-14">
             {path.map((s, i) => (

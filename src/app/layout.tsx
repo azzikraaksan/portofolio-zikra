@@ -10,7 +10,7 @@ const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], displ
 const script = Pacifico({ variable: "--font-script", subsets: ["latin"], weight: "400", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "Zikra · Full Stack Developer", template: "%s · Zikra" },
+  title: { default: "Zikra", template: "%s · Zikra" },
   description:
     "Azzikra Ramadhanti Aksan, a full stack developer (React, TypeScript, Laravel, Go) in Yogyakarta who builds AlurKerja, a multi-tenant workflow platform for enterprises.",
 };
