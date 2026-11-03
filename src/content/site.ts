@@ -70,8 +70,7 @@ export const alurkerjaCases: Case[] = [
     problem:
       "Dynamic DDL is risky: a type change can corrupt data, table names can collide, and everything has to stay isolated per tenant.",
     solution: [
-      "Support for varchar(N) with safe type transitions.",
-      "A fix for reusing the name of a table that was already deleted.",
+      "Varchar(N) support and a type-transition guard in the UI, aligned with the backend rules.",
       "A table-references endpoint, and database tables as a data source for questions.",
       "A complete column interface: add, rename, change type, set required, and delete.",
       "Deleting a table must be confirmed by typing its name.",
@@ -81,7 +80,7 @@ export const alurkerjaCases: Case[] = [
       "The tenant schema repository was refactored to lower its cognitive complexity until it passed the SonarQube quality gate.",
     result:
       "Tenants model their own data with safeguards against destructive changes, and the new code passes the quality gate.",
-    stack: ["React.js & Next.js", "TypeScript", "Laravel & Go"],
+    stack: ["React.js", "Go"],
     image: { src: "/images/alurkerja/cs-schema-builder.png", alt: "AlurKerja Schema Builder with a list of table columns" },
   },
   {
@@ -91,22 +90,24 @@ export const alurkerjaCases: Case[] = [
     kind: "Platform & data",
     repo: "bpm-service, studio-react, app-react-1",
     summary:
-      "Master data tables with dynamic columns that stay fast to search and stay unique, plus bulk upload and file columns.",
+      "Master data tables with dynamic columns, indexed for search and uniqueness, plus bulk upload, SQL import and file columns.",
     problem:
-      "The schema is not fixed, yet uniqueness and search still have to be correct and fast.",
+      "The schema is not fixed, yet uniqueness and search still have to be correct. Every tenant's records share one physical table, so a naive index or constraint would apply across tables.",
     solution: [
-      "Indexes on searchable and unique columns; uniqueness is enforced by the database.",
-      "SQL table definitions are parsed into column metadata.",
-      "Bulk upload keyed by column name or slug, plus per-column filters.",
-      "Upload and download endpoints for files, with a two-step flow for file-type columns.",
-      "The record being edited is excluded from the uniqueness check.",
+      "Search and uniqueness are backed by database indexes that are created automatically as columns change, so lookups stay fast as data grows and duplicates are rejected by the database itself.",
+      "The database itself rejects duplicate values, even when two people save at the same moment. The app still checks first, so users get a clearer message.",
+      "Import a table's structure from a SQL definition: it is read and turned into columns automatically, through an import dialog in the editor.",
+      "Bulk upload of many records at once, where columns can be matched by their name or their slug, plus filters on each column.",
+      "Files can be uploaded to and downloaded from file-type columns, with a two-step upload flow in the interface.",
+      "When editing a record, it is not counted as a duplicate of itself.",
+      "Closed a security hole in the sorting option that could have let someone run unwanted database commands, and made table slugs unique per tenant instead of across all tenants.",
     ],
     decision:
-      "Data integrity does not depend on client-side validation; the database is what rejects duplicates.",
+      "Uniqueness is enforced by the database, not only by the frontend. Application checks remain, but only to give earlier, per-row messages.",
     result:
-      "Bulk import and file attachments became core features, with upload results reported per row: what succeeded and what failed.",
-    stack: ["Laravel & Go", "TypeScript", "React.js & Next.js"],
-    image: { src: "/images/alurkerja/cs-master-data1.png", alt: "Master data table with a bulk upload dialog and per-row results" },
+      "Bulk upload reports each row separately, so valid rows are saved and failed rows come back with their reasons. Duplicates now surface as a clean conflict error instead of a server error.",
+    stack: ["React.js", "Go"],
+    image: { src: "/images/alurkerja/cs-master-data.png", alt: "Master data table with a bulk upload dialog and per-row results" },
   },
   {
     slug: "agen-ai-mcp",
@@ -128,103 +129,151 @@ export const alurkerjaCases: Case[] = [
       "The AI gateway got a fallback so the platform does not stop when one model provider has problems.",
     result:
       "Every core feature is reachable through a standard protocol, and dependence on a single AI vendor is reduced.",
-    stack: ["Laravel & Go", "TypeScript", "PostgreSQL & MySQL"],
-    image: { src: "/images/alurkerja/cs-ai-agent.png", alt: "AlurKerja MCP tool list and AI gateway settings" },
+    stack: ["Go", "Next.js"],
+    image: { src: "/images/alurkerja/cs-ai-agent.jpg", alt: "AlurKerja MCP tool list and AI gateway settings" },
   },
   {
-    slug: "isolasi-tenant",
-    name: "Tenant isolation",
-    title: "Closing tenant and role gaps across the stack",
-    kind: "Security",
-    repo: "cross-repo",
-    summary:
-      "Closing the small gaps where data can leak between tenants: slugs, headers, and route guards.",
-    problem:
-      "Data leaks between tenants rarely come through the front door. They come through small details, and a single gap is enough.",
-    solution: [
-      "Master data slugs are now unique per tenant, not global.",
-      "Workspace creation is limited to superadmins in SaaS mode.",
-      "The member role is blocked from Studio and Company Profile with a 403 and a redirect.",
-      "A per-user limit on starting processes.",
-      "An x-active-tenant header fallback on avatar upload.",
-      "The master data select uses the tenant ID, not the slug.",
-    ],
-    decision:
-      "Tenant and role boundaries are enforced on the backend and the frontend together, because data leakage is the most expensive class of bug in a SaaS product.",
-    result:
-      "Tenant and role boundaries are now enforced on both sides, and this class of data-leak bug is closed.",
-    stack: ["PostgreSQL & MySQL", "Laravel & Go", "TypeScript", "React.js & Next.js"],
-    image: { src: "/images/alurkerja/cs-multi-tenant.png", alt: "403 page for the member role and AlurKerja role settings" },
-  },
-  {
-    slug: "race-condition",
-    name: "Race condition",
-    title: "Preventing stale state when switching workspaces",
-    kind: "Frontend",
+    slug: "related-requests",
+    name: "Related requests",
+    title: "A Related Requests view for people involved in a request",
+    kind: "Feature",
     repo: "app-react-1",
     summary:
-      "When a user switches workspaces quickly, an old response can overwrite the new screen. Tenant A's data shows up in tenant B.",
+      "People can see every request they are involved in, not only the ones they started, in one place.",
     problem:
-      "A response from an earlier request arrives late and overwrites the latest state. From the client's side, this is a data leak.",
+      "The app only showed requests a person had started themselves. Anyone who took part in a request in another way, such as approving a step, had no easy way to find it again or follow its progress.",
     solution: [
-      "A guard on the fetch effect so stale responses are ignored.",
-      "Old workspace data is cleared after switching workspaces.",
-      "The old task's form and state are reset when switching tasks.",
-      "Sidebar and home loading states are synchronized while the workspace initializes.",
+      "Added a Related Requests menu in the sidebar, with its own list and detail view.",
+      "Reused the familiar My Requests layout, so the new page feels the same to use.",
+      "Made links to a request open the right detail page, with a correct breadcrumb back to the list.",
+      "Fixed the page numbers in the list so long lists are easy to move through.",
     ],
     decision:
-      "The problem is handled on the client: a guard on fetch and a state reset when the tenant changes, so the order in which responses arrive no longer decides what the screen shows.",
+      "I built the new page on top of the existing My Requests screen instead of creating a separate one, so the two stay consistent and future improvements apply to both.",
     result:
-      "The UI is deterministically consistent during fast navigation, and this hard-to-reproduce class of bug is gone.",
-    stack: ["React.js & Next.js", "TypeScript"],
-    image: { src: "/images/alurkerja/cs-race-condition.png", alt: "DevTools Network tab with an old request marked canceled" },
+      "People can find and follow every request they are involved in from one menu, without asking the person who started it.",
+    stack: ["React.js", "TypeScript"],
+    image: { src: "/images/alurkerja/cs-related-requests.png", alt: "Related Requests list with the detail panel open" },
   },
   {
-    slug: "aksi-massal",
+    slug: "cancel-request",
+    name: "Cancel request",
+    title: "Letting requesters cancel a request that is still running",
+    kind: "Workflow UX",
+    repo: "app-react-1",
+    summary:
+      "Requesters can stop a request they started by mistake, and the app clearly explains when cancelling is not possible.",
+    problem:
+      "Once a request was submitted, there was no way to take it back. A wrong or outdated request kept going and took reviewers' time. Cancelling is not always safe either, for example when someone has already finished a later step.",
+    solution: [
+      "Added a Cancel Request button on My Requests, with a short confirmation and an optional reason for the reviewers.",
+      "Added a Cancelled filter and a clear label, with the date and reason, on cancelled requests.",
+      "Checked beforehand whether a request can still be cancelled. If not, the button is locked.",
+      "Wrote a separate, plain explanation for each reason cancelling is blocked, such as a policy being off or another person having already moved the request forward.",
+      "Limited cancelling to the person who started the request, so it does not appear in Related Requests.",
+      "Adjusted the dialog to match the design mockup.",
+    ],
+    decision:
+      "A locked button always says why. Different causes get different explanations, so the requester knows whether to wait, ask someone, or give up.",
+    result:
+      "Requesters can correct their own mistakes without asking an admin, and reviewers stop spending time on requests that no longer matter.",
+    stack: ["React.js", "TypeScript"],
+    image: { src: "/images/alurkerja/cs-cancel-request.png", alt: "Cancel request dialog with an optional reason field" },
+  },
+  {
+    slug: "bulk-actions",
     name: "Bulk actions",
     title: "Bulk claim and bulk complete for group tasks",
     kind: "Workflow UX",
     repo: "app-react-1",
     summary:
-      "Operators process many tasks at once, with accurate selection and filters that also decide what select-all picks.",
+      "Operators can handle many tasks in one go, and what gets selected always matches what they see on screen.",
     problem:
-      "Bulk operations on group tasks risk being inconsistent: some can fail, and select-all has to respect the filters.",
+      "Handling tasks one by one was slow. The bulk tools that existed were also confusing: choosing \"select all\" did not always pick the tasks the operator had filtered, so the wrong tasks could be processed.",
     solution: [
-      "Bulk claim on group tasks.",
-      "Fixes to the filters and select-all behavior in bulk complete.",
-      "The bulk complete form stays readable in dark mode.",
-      "Filtering by variable in My Requests.",
-      "Fields are rendered from the form schema when the variable type is null.",
-      "The panel closes automatically after a claim.",
+      "Added bulk claim, so operators can take ownership of many group tasks at once.",
+      "Fixed the filters and \"select all\" in bulk complete so they work together.",
+      "Made the bulk complete form easy to read in dark mode.",
+      "Closed the task panel automatically after a claim, so operators can move on to the next one.",
+      "Added a limit on how many tasks can be selected at once, with a clear message when it is reached.",
     ],
     decision:
-      "Select-all follows the filtered results, not the whole list, so what gets processed matches what is visible.",
+      "\"Select all\" follows the filtered results, not the whole list, so what gets processed is exactly what the operator sees.",
     result:
-      "Operators process many tasks at once with more dependable results, and repetitive manual work shrinks.",
-    stack: ["React.js & Next.js", "TypeScript", "Testing & code quality"],
+      "Operators can process many tasks at once with fewer mistakes, and the repetitive manual work is much smaller.",
+    stack: ["React.js", "Go"],
     image: { src: "/images/alurkerja/cs-bulk-operations.png", alt: "Task list with select-all and the bulk complete dialog" },
   },
   {
     slug: "lane-sync",
     name: "Lane Sync",
-    title: "A wizard that syncs SOPs with the org structure",
+    title: "A wizard that maps BPMN lanes to org roles",
     kind: "Workflow UX",
-    repo: "studio-react",
+    repo: "studio-react, bpm-service",
     summary:
-      "Lanes in a BPMN diagram are mapped to roles in the org structure through a four-step wizard: Scope, Scan, Review, and Apply.",
+      "Lanes in BPMN diagrams are matched to roles in the org structure through a wizard: Scope, Scan, Review and Apply, followed by a results screen.",
     problem:
-      "The process has several steps and writes data, while nested lanes make the mapping ambiguous.",
+      "The change touches many files and writes data, so users need to see what will change before it happens, and one failed file should not stop the rest.",
     solution: [
-      "A step-by-step wizard dialog: Scope, Scan, Review, Apply.",
-      "A results screen and markers in the org structure.",
-      "Lanes are matched by name in Drive, then the lane's role info is shown.",
+      "A step-by-step dialog: Scope, Scan, Review and Apply, then a results screen.",
+      "Apply saves files one by one, each against its expected version, so a file that changed in the meantime is reported instead of overwritten. One failure does not stop the others.",
+      "The results screen lists the lanes that got a role, the new version of each file, files that changed during the sync, files skipped, and how to undo through Versions.",
+      "Markers in the org structure show what the last sync changed.",
+      "An endpoint that lists every BPMN file in the Drive, with folder and version, in a single call.",
+      "Lanes are matched by name in Drive, and each file shows its lane roles.",
     ],
     decision:
-      "The innermost lane takes priority in findLaneByFlowNode, and the feature sits behind a feature flag with a test that makes sure the flag is off by default.",
+      "Apply works file by file against the expected version, and the whole feature is off by default behind a feature flag on both the frontend and the backend, with a test that the flag defaults to off.",
     result:
-      "SOPs and the org structure stay in sync without manual edits, and mapping nested lanes became accurate.",
-    stack: ["React.js & Next.js", "TypeScript"],
+      "Teams can map lanes to org roles from one wizard, review the changes first, and see exactly which files changed.",
+    stack: ["React.js", "Go"],
     image: { src: "/images/alurkerja/cs-lane-sync.png", alt: "Lane Sync wizard on the Review step" },
+  },
+  {
+    slug: "isolasi-tenant",
+    name: "Tenant isolation",
+    title: "Tenant and role boundary fixes",
+    kind: "Security",
+    repo: "app-react-1, studio-react, company-profile-react, bpm-service, report-service, tenant-management-service",
+    summary:
+      "Fixes for places where one tenant's data or limits showed up in another tenant's workspace, plus tighter access by role.",
+    problem:
+      "In a multi-tenant product, boundaries break through small details: shared state, global identifiers, and screens that only check the role in the interface.",
+    solution: [
+      "Stopped the previous workspace's tasks, notifications, processes and active-tenant header from showing up after switching workspaces.",
+      "Slugs for master data tables and report metrics are now unique per tenant instead of across all tenants, so one tenant's names no longer block another's.",
+      "The member role is redirected to a 403 page when opening Studio or Company Profile.",
+      "Admins can limit a user to a chosen list of processes they may start: data model, admin API and the settings dialog.",
+    ],
+    decision:
+      "Role and tenant checks should not live in one place only. The member 403 is an interface guard, so the server must still enforce access on its own.",
+    result:
+      "Switching workspaces no longer shows the previous workspace's data, and several tenant-wide naming conflicts are gone.",
+    stack: ["React.js", "Go"],
+    image: { src: "/images/alurkerja/cs-multi-tenant.png", alt: "403 page for the member role and AlurKerja role settings" },
+  },
+  {
+    slug: "race-condition",
+    name: "Race condition",
+    title: "Preventing stale data when switching workspaces",
+    kind: "Frontend",
+    repo: "app-react-1",
+    summary:
+      "When a user switched workspaces quickly, a slow reply from the old workspace could show up on the new one, so one company's data appeared in another's.",
+    problem:
+      "Every screen asks the server for its data. If the user switched workspaces before an earlier request came back, that late reply was still shown on the screen. The user would then see another workspace's information, which is a data leak from their point of view.",
+    solution: [
+      "Made each screen ignore any reply that arrives after the user has already moved on.",
+      "Cleared the old workspace's data as soon as the user switches to another one.",
+      "Reset the form and progress of the previous task when the user opens a different task.",
+      "Kept the loading state of the sidebar and the home page in step while a workspace is getting ready.",
+    ],
+    decision:
+      "I fixed this in the app itself: ignore late replies and clear old data on every switch. That way the screen no longer depends on which reply arrives first.",
+    result:
+      "The screen stays consistent even when users click around quickly, and workspaces no longer show each other's data.",
+    stack: ["React.js", "TypeScript"],
+    image: { src: "/images/alurkerja/cs-race-condition.png", alt: "DevTools Network tab with an old request marked canceled" },
   },
 ];
 
@@ -234,26 +283,31 @@ export const projects: Project[] = [
     slug: "alurkerja",
     name: "AlurKerja",
     title: "A business process automation platform for enterprise workflows",
-    kind: "SaaS platform",
+    kind: "SaaS Platform",
     repo: "cross-repo",
     summary:
-      "Business process modeling, approval automation, and bulk task handling on a multi tenant platform, where every organization gets its own isolated workspace. I work on the frontend and backend as a full stack developer.",
+      "AlurKerja is a multi-tenant business process management platform for workflow automation, approvals, and organizational operations. As a Full Stack Developer, I build and maintain features across React and Go, covering data management, dashboards, workflow controls, and access management.",
     problem:
-      "Every organization's data has to stay isolated, while new features keep landing in modules that are already running in production.",
+      "Developing new features across a production-ready, multi-tenant platform requires keeping each organization's data isolated, maintaining consistent workflows, and ensuring new functionality integrates safely with existing modules.",
     solution: [
-      "Enforced role boundaries in the client: members are blocked from Studio with a 403 and a redirect.",
-      "Built a no-code Schema Builder for per-tenant database tables, and Master Data with bulk upload and SQL import.",
-      "Fixed stale responses overwriting the screen when users switch workspaces quickly.",
-      "Moved forms, dashboards, and other screens to shadcn/ui, rolled out behind feature flags and retired once stable.",
-      "Built bulk claim and bulk complete for group tasks, and Lane Sync between SOPs and the org structure.",
-      "Added MCP tools so AI agents can operate core features.",
+      "Built Master Data features for bulk upload, file management, configurable slugs, unique column indexing, and dynamic table definitions, alongside React interfaces for records, column filters, and file fields.",
+      "Built a tenant-specific Schema Builder for dynamic database tables, including table creation, column management, and table reference endpoints.",
+      "Implemented request cancellation policies, Cancel Request actions, and distinct cancellation statuses across backend and frontend.",
+      "Developed Related Requests and multi-process task filters, allowing users to find related workflows and filter tasks by variables.",
+      "Added incident monitoring endpoints and incident indicators in BPMN process diagrams.",
+      "Implemented role-based access control for process initiation and workspace access, including frontend restrictions and 403 redirects for unauthorized members.",
+      "Built profile avatar uploads with image cropping, workspace favorites, and invitation management features.",
+      "Developed workspace completion progress tracking and admin ticket filtering in Helpdesk.",
     ],
     decision:
-      "Tenant and role checks are not left to the backend alone: the client also blocks screens a role has no access to and discards responses that belong to a workspace the user has already left.",
+      "Designed features across both backend and frontend to keep workflow behavior, access restrictions, and tenant-specific data consistent throughout the platform.",
     result:
-      "Members can no longer open Studio, and fast workspace switching no longer shows one workspace's data in another. New UI screens shipped behind feature flags, so modules already in production kept running",
-    stack: ["React + Vite", "Go"],
-    image: { src: "/images/alurkerja/cover1.png", alt: "AlurKerja main dashboard" },
+      "Expanded AlurKerja's workflow, data management, reporting, and workspace capabilities through full stack development across multiple production modules.",
+    stack: ["React.js", "Go"],
+    image: {
+      src: "/images/alurkerja/cover1.png",
+      alt: "AlurKerja main dashboard"
+    },
     cases: alurkerjaCases,
   },
   {
@@ -341,12 +395,13 @@ export const building: { name: string; note: string; dot: Dot; href: string }[] 
   { name: "AlurKerja", note: "Currently building · Full stack", dot: "ok", href: "/projects/alurkerja" },
   { name: "Mavoka", note: "Internship project · Full stack", dot: "wait", href: "/projects/mavoka" },
   { name: "Jeep Booking App", note: "Academic · Frontend", dot: "wait", href: "/projects/jeep-booking-app" },
-  { name: "Side Projects", note: "Spendly · Helpdesk Mini", dot: "wait", href: "/projects/spendly" },
+  { name: "Spendly", note: "Side project · Frontend", dot: "wait", href: "/projects/spendly" },
+  { name: "Helpdesk Mini", note: "Side project · Frontend", dot: "wait", href: "/projects/helpdesk-mini" },
 ];
 
 // Numbers taken from the CV.
 export const stats = [
-  { value: "10+", label: "full stack features in React + Go" },
+  { value: "10+", label: "full stack features" },
   { value: "100+", label: "support tickets resolved" },
   { value: "3.96", label: "GPA out of 4.00" },
 ];
@@ -376,6 +431,17 @@ export const skillGroups = [
   },
 ] as const;
 
+// Sertifikat. Ganti isi sesuai sertifikat asli, lalu taruh gambarnya di public/images/certificates/
+// dengan nama file yang sama seperti `image` di bawah (rasio 4:3 atau 16:10 paling rapi).
+export const certificates = [
+  { name: "FrontEnd for Beginners", issuer: "SoloLearn", date: "October 2026", image: "/images/certificates/certificate-01.jpg" },
+  { name: "TypeScript for Beginners", issuer: "SoloLearn", date: "October 2026", image: "/images/certificates/certificate-02.jpg" },
+  { name: "GoLang for Beginners", issuer: "Issuing organization", date: "October 2026", image: "/images/certificates/certificate-03.jpg" },
+  { name: "Application Development with Laravel", issuer: "Issuing organization", date: "October 2026", image: "/images/certificates/certificate-04.jpg" },
+  { name: "CSS Web Design for Beginners", issuer: "Issuing organization", date: "October 2026", image: "/images/certificates/certificate-05.jpg" },
+  { name: "JavaScript Programming", issuer: "Issuing organization", date: "October 2026", image: "/images/certificates/certificate-06.jpg" },
+];
+
 export const path = [
   { when: "Apr - Jun 2025", title: "Jeep Booking App", context: "Academic project · Frontend", text: "Set up the project's initial configuration and built the scheduling, driver status, ticketing, and CRUD features." },
   { when: "Jun - Aug 2025", title: "Mavoka", context: "Fitinline · Full Stack Intern", text: "Next.js on the frontend and Laravel on the backend, with authentication, a REST API, and a dashboard." },
@@ -386,7 +452,7 @@ export const path = [
 export const laptopScreens = [
   { src: "/images/alurkerja/cover1.png", alt: "AlurKerja main dashboard" },
   { src: "/images/alurkerja/cs-schema-builder.png", alt: "AlurKerja Schema Builder" },
-  { src: "/images/alurkerja/cs-master-data1.png", alt: "AlurKerja Master Data" },
+  { src: "/images/alurkerja/cs-master-data.png", alt: "AlurKerja Master Data" },
 ];
 
 export type CvItem = { label: string; value: string };
@@ -397,7 +463,7 @@ export const experience: CvGroup[] = [
     name: "PT Javan Cipta Solusi",
     period: "Freelance full stack developer, Jan 2026 to present",
     items: [
-      { label: "Full stack features in React + Go", value: "10+" },
+      { label: "Full stack features", value: "10+" },
       { label: "Support tickets per week", value: "10–20" },
       { label: "Per-tenant Schema Builder", value: "FE + BE" },
       { label: "Master Data bulk upload", value: "Go" },

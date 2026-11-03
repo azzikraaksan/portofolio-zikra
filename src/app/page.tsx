@@ -2,11 +2,10 @@
 import { CountUp } from "@/components/count-up";
 import { Carousel } from "@/components/carousel";
 import { Laptop } from "@/components/laptop";
-import { RaceDemo } from "@/components/race-demo";
 import { Shot } from "@/components/shot";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
-import { alurkerjaHighlights, avatar, building, heroPhotos, laptopScreens, path, profile, projects, skillGroups, stats } from "@/content/site";
+import { alurkerjaHighlights, avatar, building, certificates, heroPhotos, laptopScreens, path, profile, projects, skillGroups, stats } from "@/content/site";
 import Image from "next/image";
 
 const vars = (v: Record<string, string | number>) => v as React.CSSProperties;
@@ -22,7 +21,7 @@ const [featured, ...others] = projects;
 
 const letter = [
   "My full name is Azzikra Ramadhanti Aksan. I'm a full stack developer with 1+ year of experience. I started on the frontend in an academic project, then moved into the backend during my internship at Fitinline.",
-  "Since August 2025 I've been at PT Javan Cipta Solusi, first as an intern, then as a freelancer. Most of my time goes into AlurKerja: building features from the API to interface, and handling 100+ support tickets.",
+  "Since August 2025, I've been working at PT Javan Cipta Solusi, first as an intern and later as a freelancer. Most of my work focuses on AlurKerja, where I develop full stack features across the backend and frontend and handle 100+ support tickets.",
   "Two years of handling letters, meeting minutes, and records for BEM made me careful by habit. That habit carries into my code: validation, access limits, and quality gates.",
 ];
 
@@ -94,7 +93,7 @@ export default function Home() {
 
         {/* Bukti kerja */}
         <section id="projects" aria-labelledby="sk" className="wrap section">
-          <p data-reveal suppressHydrationWarning className="mono eyebrow">~ Proof of work</p>
+          <p data-reveal suppressHydrationWarning className="mono eyebrow">01 ~ Proof of work</p>
           <h2 id="sk" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">
             Things I&apos;ve <em>built.</em>
           </h2>
@@ -110,9 +109,6 @@ export default function Home() {
                     <span>{h.text}</span>
                   </li>
                 ))}
-              </ul>
-              <ul className="chips">
-                {featured.stack.slice(0, 3).map((s) => <li key={s}>{s}</li>)}
               </ul>
               <Link className="btn" href={`/projects/${featured.slug}`}>Explore more <span className="go"><Arrow /></span></Link>
             </div>
@@ -169,7 +165,7 @@ export default function Home() {
               <Shot {...avatar} width={1000} height={1250} sizes="(min-width: 1024px) 40vw, 90vw" className="h-full w-full" style={fill} />
             </figure>
             <div>
-              <p data-reveal suppressHydrationWarning className="mono eyebrow">01 ~ Who I am</p>
+              <p data-reveal suppressHydrationWarning className="mono eyebrow">02 ~ Who I am</p>
               <h2 id="tt" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">Hi, <em>I&apos;m</em> Zikra</h2>
               <div className="muted mt-8 max-w-[56ch] space-y-5 text-lg">
                 {letter.map((p, i) => <p key={i} data-reveal suppressHydrationWarning style={vars({ "--i": i + 2 })}>{p}</p>)}
@@ -180,7 +176,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
 
         {/* Personal photo fan */}
         <section aria-labelledby="cb" className="dark section">
@@ -252,9 +247,31 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Keahlian dan teknologi */}
+        <section id="skills" aria-labelledby="ka" className="wrap section pt-0">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p data-reveal suppressHydrationWarning className="mono eyebrow">03 ~ Skills &amp; technologies</p>
+              <h2 id="ka" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">What I <em>work with.</em></h2>
+            </div>
+          </div>
+          <div className="layers mt-10">
+            {skillGroups.map((g, i) => (
+              <article key={g.key} data-reveal="item" suppressHydrationWarning style={vars({ "--i": i })} className={`layer ${g.tone}`}>
+                <span className="mono opacity-70">{String(g.items.length).padStart(2, "0")} skills</span>
+                <h3>{g.title}</h3>
+                <p className="tag">{g.tagline}</p>
+                <ul className="chips mt-8">
+                  {g.items.map((t) => <li key={t}>{t}</li>)}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
         {/* Jalur */}
         <section id="journey" aria-labelledby="pj" className="wrap section pt-0">
-          <p data-reveal suppressHydrationWarning className="mono eyebrow">~ Journey</p>
+          <p data-reveal suppressHydrationWarning className="mono eyebrow">04 ~ Journey</p>
           <h2 id="pj" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">
             Started in the Classroom <em>still climbing.</em>
           </h2>
@@ -275,25 +292,52 @@ export default function Home() {
           </ol>
         </section>
 
-        {/* Keahlian dan teknologi */}
-        <section id="skills" aria-labelledby="ka" className="wrap section pt-0">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div>
-              <p data-reveal suppressHydrationWarning className="mono eyebrow">~ Skills &amp; technologies</p>
-              <h2 id="ka" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">What I <em>work with.</em></h2>
-            </div>
-          </div>
-          <div className="layers mt-10">
-            {skillGroups.map((g, i) => (
-              <article key={g.key} data-reveal="item" suppressHydrationWarning style={vars({ "--i": i })} className={`layer ${g.tone}`}>
-                <span className="mono opacity-70">{String(g.items.length).padStart(2, "0")} skills</span>
-                <h3>{g.title}</h3>
-                <p className="tag">{g.tagline}</p>
-                <ul className="chips mt-8">
-                  {g.items.map((t) => <li key={t}>{t}</li>)}
-                </ul>
-              </article>
-            ))}
+        {/* Sertifikat */}
+        <section id="certificates" aria-labelledby="sf" className="wrap section pt-0">
+          <p data-reveal suppressHydrationWarning className="mono eyebrow">
+            05 ~ Certificates
+          </p>
+
+          <h2
+            id="sf"
+            data-reveal
+            suppressHydrationWarning
+            style={vars({ "--i": 1 })}
+            className="title"
+          >
+            Proof I <em>keep learning.</em>
+          </h2>
+
+          <div className="mt-10">
+            <Carousel label="Certificates">
+              {certificates.map((c, i) => (
+                <li key={c.image} className="card">
+                  <div className="entry">
+                    <div className="pic">
+                      <Shot
+                        src={c.image}
+                        alt={`${c.name} certificate`}
+                        width={1600}
+                        height={1200}
+                        sizes="420px"
+                        className="h-full w-full"
+                        style={fill}
+                      />
+                    </div>
+
+                    <div className="body">
+                      <span className="mono muted">
+                        Certificate {String(i + 1).padStart(2, "0")} · {c.date}
+                      </span>
+
+                      <h3>{c.name}</h3>
+
+                      <p>{c.issuer}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </Carousel>
           </div>
         </section>
 
@@ -302,7 +346,7 @@ export default function Home() {
           <p data-reveal suppressHydrationWarning className="mono eyebrow">06 ~ Start here</p>
           <h2 id="kt" data-reveal suppressHydrationWarning style={vars({ "--i": 1 })} className="title">Contact <em>me.</em></h2>
           <p data-reveal suppressHydrationWarning style={vars({ "--i": 2 })} className="muted mt-7 max-w-[52ch] text-lg">
-            I&apos;m open to full stack developer roles, from backend to frontend. Tell me about the role and I&apos;ll reply by email.
+            I&apos;m open to full stack developer roles. Tell me about the role and I&apos;ll reply by email.
           </p>
           <div data-reveal suppressHydrationWarning style={vars({ "--i": 3 })} className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
             <a className="btn" href={`mailto:${profile.email}?subject=${encodeURIComponent("Hello Zikra, from your portfolio")}`}>

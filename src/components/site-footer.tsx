@@ -22,8 +22,9 @@ export function SiteFooter() {
         <ul className="foot-links">
           <li><Link className="link" href="/#projects">Projects</Link></li>
           <li><Link className="link" href="/#about">About</Link></li>
-          <li><Link className="link" href="/#journey">Journey</Link></li>
           <li><Link className="link" href="/#skills">Skills</Link></li>
+          <li><Link className="link" href="/#journey">Journey</Link></li>
+          <li><Link className="link" href="/#certificates">Certificates</Link></li>
           <li><a className="link" href={profile.cv} download>Download CV</a></li>
         </ul>
       </div>

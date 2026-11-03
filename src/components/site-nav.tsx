@@ -7,8 +7,9 @@ import { profile } from "@/content/site";
 const links = [
   { href: "/#projects", label: "Projects" },
   { href: "/#about", label: "About" },
-  { href: "/#journey", label: "Journey" },
   { href: "/#skills", label: "Skills" },
+  { href: "/#journey", label: "Journey" },
+  { href: "/#certificates", label: "Certificates" },
   { href: "/#contact", label: "Contact" },
 ];
 

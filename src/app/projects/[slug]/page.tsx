@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         <p data-load style={vars({ "--d": "300ms" })} className="lead mt-6 max-w-[40ch]">{p.title}</p>
 
         <div data-open className="mt-10">
-          <Devices slug={p.slug} name={p.name} />
+          <Devices slug={p.slug} name={p.name} laptopOnly={p.slug === "jeep-booking-app"} />
         </div>
 
         <div className="mt-16 grid gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-20">
