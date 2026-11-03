@@ -21,7 +21,7 @@ const Arrow = ({ d = "M5 12h14M13 6l6 6-6 6" }: { d?: string }) => (
 const [featured, ...others] = projects;
 
 const letter = [
-  "My full name is Azzikra Ramadhanti Aksan. I'm a full stack developer with 1+ year of experience.",
+  "My full name is Azzikra Ramadhanti Aksan. I'm a full stack developer with 1+ year of experience. I started on the frontend in an academic project, then moved into the backend during my internship at Fitinline.",
   "Since August 2025 I've been at PT Javan Cipta Solusi, first as an intern, then as a freelancer. Most of my time goes into AlurKerja: building features from the API to interface, and handling 100+ support tickets.",
   "Two years of handling letters, meeting minutes, and records for BEM made me careful by habit. That habit carries into my code: validation, access limits, and quality gates.",
 ];
@@ -263,13 +263,14 @@ export default function Home() {
               <li key={`${s.title}-${s.when}`} data-reveal="item" suppressHydrationWarning style={vars({ "--i": i })} className="stop">
                 <span className="mono muted">{s.when}</span>
                 <h3>{s.title}</h3>
+                <span className="mono ctx">{s.context}</span>
                 <p>{s.text}</p>
               </li>
             ))}
             <li data-reveal="item" suppressHydrationWarning style={vars({ "--i": 4 })} className="stop stop-end">
               <span className="mono">Now · open</span>
               <h3>Full stack developer</h3>
-              <p>From backend to frontend. Let's build with me.</p>
+              <p>From frontend to full stack. Let's build with me.</p>
             </li>
           </ol>
         </section>

@@ -263,6 +263,7 @@ p, li { text-wrap: pretty; }
 .stop:last-child::before { display: none; }
 .stop::after { content: ""; position: absolute; left: 0; top: 4px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); }
 .stop h3 { font-weight: 800; text-transform: uppercase; letter-spacing: -0.04em; font-size: 1.4rem; line-height: 1.05; margin-top: 0.4rem; }
+.stop .ctx { display: block; margin-top: 0.5rem; font-size: 0.75rem; color: var(--ink); opacity: 0.75; }
 .stop p { color: var(--muted); margin-top: 0.5rem; }
 .stop.stop-end { padding: 1.5rem; margin-left: 2.2rem; border-radius: var(--r); background: var(--night); color: var(--night-ink); }
 .stop-end::after { left: -2.2rem; top: 1.7rem; }

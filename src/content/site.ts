@@ -87,7 +87,7 @@ export const alurkerjaCases: Case[] = [
   {
     slug: "master-data",
     name: "Master Data",
-    title: "Data integrity enforced at the database level",
+    title: "Bulk upload and SQL import for dynamic master data",
     kind: "Platform & data",
     repo: "bpm-service, studio-react, app-react-1",
     summary:
@@ -111,7 +111,7 @@ export const alurkerjaCases: Case[] = [
   {
     slug: "agen-ai-mcp",
     name: "AI Agents & MCP",
-    title: "An AI agent integration layer: MCP tools and an AI gateway",
+    title: "MCP tools and an AI gateway for AI agents",
     kind: "Integration",
     repo: "integration-service, bpm-service, helpdesk",
     summary:
@@ -134,7 +134,7 @@ export const alurkerjaCases: Case[] = [
   {
     slug: "isolasi-tenant",
     name: "Tenant isolation",
-    title: "Multi-tenant isolation and RBAC, end to end",
+    title: "Closing tenant and role gaps across the stack",
     kind: "Security",
     repo: "cross-repo",
     summary:
@@ -182,13 +182,13 @@ export const alurkerjaCases: Case[] = [
   {
     slug: "aksi-massal",
     name: "Bulk actions",
-    title: "Bulk claim and bulk complete for hundreds of tasks",
+    title: "Bulk claim and bulk complete for group tasks",
     kind: "Workflow UX",
     repo: "app-react-1",
     summary:
       "Operators process many tasks at once, with accurate selection and filters that also decide what select-all picks.",
     problem:
-      "Bulk operations on hundreds of tasks risk being inconsistent: some can fail, and select-all has to respect the filters.",
+      "Bulk operations on group tasks risk being inconsistent: some can fail, and select-all has to respect the filters.",
     solution: [
       "Bulk claim on group tasks.",
       "Fixes to the filters and select-all behavior in bulk complete.",
@@ -237,21 +237,21 @@ export const projects: Project[] = [
     kind: "SaaS platform",
     repo: "cross-repo",
     summary:
-      "Business process modeling, approval automation, and large-scale task queues in a single multi-tenant workspace. I work on the frontend and the platform as a full stack developer.",
+      "Business process modeling, approval automation, and bulk task handling on a multi tenant platform, where every organization gets its own isolated workspace. I work on the frontend and backend as a full stack developer.",
     problem:
-      "Every tenant has to stay isolated at every layer, while new features keep landing in modules that are already running in production.",
+      "Every organization's data has to stay isolated, while new features keep landing in modules that are already running in production.",
     solution: [
-      "Tenant data isolation at three layers: client state, API contract, and database schema.",
-      "Strict RBAC with 403 responses for roles that have no access.",
-      "A no-code Schema Builder and a Master Data Engine with bulk upload.",
-      "A fix for race conditions during fast navigation between workspaces.",
-      "UI migration to shadcn/ui across 10+ modules behind feature flags.",
-      "Bulk task actions, Lane Sync between SOPs and the org structure, and AI agent integration through MCP.",
+      "Enforced role boundaries in the client: members are blocked from Studio with a 403 and a redirect.",
+      "Built a no-code Schema Builder for per-tenant database tables, and Master Data with bulk upload and SQL import.",
+      "Fixed stale responses overwriting the screen when users switch workspaces quickly.",
+      "Moved forms, dashboards, and other screens to shadcn/ui, rolled out behind feature flags and retired once stable.",
+      "Built bulk claim and bulk complete for group tasks, and Lane Sync between SOPs and the org structure.",
+      "Added MCP tools so AI agents can operate core features.",
     ],
     decision:
-      "Security is treated as a property of the system, not a feature: tenant boundaries are enforced at every layer, not in just one place.",
+      "Tenant and role checks are not left to the backend alone: the client also blocks screens a role has no access to and discards responses that belong to a workspace the user has already left.",
     result:
-      "3 layers of data isolation, 10+ modules migrated with zero downtime, and 0 stale-state incidents since the fix.",
+      "Members can no longer open Studio, and fast workspace switching no longer shows one workspace's data in another. New UI screens shipped behind feature flags, so modules already in production kept running",
     stack: ["React + Vite", "Go"],
     image: { src: "/images/alurkerja/cover1.png", alt: "AlurKerja main dashboard" },
     cases: alurkerjaCases,
@@ -377,10 +377,10 @@ export const skillGroups = [
 ] as const;
 
 export const path = [
-  { when: "Apr - Jun 2025", title: "Jeep Booking App", text: "Frontend developer on a academic project: set up the project's initial configuration and built its scheduling, driver status, ticketing, and CRUD features." },
-  { when: "Jun - Aug 2025", title: "Fitinline", text: "Full stack intern: Next.js on the frontend and Laravel on the backend, with authentication, a REST API, and a dashboard." },
-  { when: "Aug - Dec 2025", title: "PT Javan Cipta Solusi", text: "Full stack intern on AlurKerja: fixed bugs and built 10+ pages in the Company Profile module." },
-  { when: "Jan - Nov 2026", title: "PT Javan Cipta Solusi", text: "Freelance full stack on AlurKerja: shipped 10+ full stack features and handled 100+ support tickets." },
+  { when: "Apr - Jun 2025", title: "Jeep Booking App", context: "Academic project · Frontend", text: "Set up the project's initial configuration and built the scheduling, driver status, ticketing, and CRUD features." },
+  { when: "Jun - Aug 2025", title: "Mavoka", context: "Fitinline · Full Stack Intern", text: "Next.js on the frontend and Laravel on the backend, with authentication, a REST API, and a dashboard." },
+  { when: "Aug - Dec 2025", title: "AlurKerja", context: "PT Javan Cipta Solusi · Full Stack Intern", text: "Fixed bugs and built 10+ pages in the Company Profile module." },
+  { when: "Jan 2026 - Now", title: "AlurKerja", context: "PT Javan Cipta Solusi · Freelance Full Stack", text: "Shipped 10+ full stack features and handled 100+ support tickets." },
 ];
 
 export const laptopScreens = [
