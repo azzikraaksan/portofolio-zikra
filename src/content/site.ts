@@ -303,7 +303,7 @@ export const projects: Project[] = [
       "Designed features across both backend and frontend to keep workflow behavior, access restrictions, and tenant-specific data consistent throughout the platform.",
     result:
       "Expanded AlurKerja's workflow, data management, reporting, and workspace capabilities through full stack development across multiple production modules.",
-    stack: ["React.js", "Go"],
+    stack: ["React.js", "Golang"],
     image: {
       src: "/images/alurkerja/cover1.png",
       alt: "AlurKerja main dashboard"
@@ -360,7 +360,7 @@ export const projects: Project[] = [
       "Search and filters.",
       "Local data storage.",
     ],
-    stack: [],
+    stack: ["Vue.js", "Bootstrap"],
     image: { src: "/images/projects/spendly.png", alt: "Spendly transaction list" },
   },
   {
@@ -376,7 +376,7 @@ export const projects: Project[] = [
       "Priority settings.",
       "Search and filters.",
     ],
-    stack: [],
+    stack: ["Vue.js", "Semantic UI"],
     image: { src: "/images/projects/helpdesk-mini.png", alt: "Helpdesk Mini ticket dashboard" },
   },
 ];

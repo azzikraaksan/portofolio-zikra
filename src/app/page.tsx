@@ -101,6 +101,7 @@ export default function Home() {
             <div data-reveal suppressHydrationWarning className="showcase-text">
               <p className="mono muted"><span className="dot" aria-hidden="true" /> Featured Project</p>
               <h3 className="feature-title">{featured.name}</h3>
+              <span className="mono stack-line">{featured.stack.join(" · ")}</span>
               <p className="feature-lead">{featured.title}.</p>
               <ul className="highlights">
                 {alurkerjaHighlights.map((h) => (
@@ -137,6 +138,9 @@ export default function Home() {
                         {c.name}
                         <Arrow d="M7 17L17 7M8 7h9v9" />
                       </h3>
+                      {c.stack.length > 0 && (
+                        <span className="mono stack-line">{c.stack.slice(0, 3).join(" · ")}</span>
+                      )}
                       <p>{c.title}.</p>
                     </div>
                   </Link>
